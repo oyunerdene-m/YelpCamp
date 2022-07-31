@@ -4,11 +4,34 @@ const mongoose = require('mongoose');
 
 const app = express();
 
+const Campground = require('./models/campground');
+
+main().catch((err) => console.log(err));
+
+async function main() {
+	try {
+		await mongoose.connect(
+			'mongodb+srv://oyunerdene:oyukaoyuka26@mongo-lesson.deu0x.mongodb.net/campgroundApp?retryWrites=true&w=majority',
+		);
+
+		console.log('mongo connection open!!!');
+	} catch (error) {
+		handleError(error);
+	}
+}
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
 	res.render('home');
+});
+
+//test route
+app.get('/makecamp', async (req, res) => {
+	const camp = new Campground({ title: 'Green camp', description: 'Cheaper  campgroound!!' });
+	await camp.save();
+	res.send(camp);
 });
 
 app.listen(3000, () => {

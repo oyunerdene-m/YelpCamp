@@ -23,15 +23,21 @@ async function main() {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+// //test route
+// app.get('/makecamp', async (req, res) => {
+// 	const camp = new Campground({ title: 'Green camp', description: 'Cheaper  campgroound!!' });
+// 	await camp.save();
+// 	res.send(camp);
+// });
+
 app.get('/', (req, res) => {
 	res.render('home');
 });
 
-//test route
-app.get('/makecamp', async (req, res) => {
-	const camp = new Campground({ title: 'Green camp', description: 'Cheaper  campgroound!!' });
-	await camp.save();
-	res.send(camp);
+//index route
+app.get('/campgrounds', async (req, res) => {
+	const campgrounds = await Campground.find({});
+	res.render('campgrounds/index', { campgrounds });
 });
 
 app.listen(3000, () => {

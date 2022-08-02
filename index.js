@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override');
 
 const app = express();
 
@@ -23,6 +24,7 @@ async function main() {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 
 // //test route
 // app.get('/makecamp', async (req, res) => {
@@ -52,6 +54,20 @@ app.post('/campgrounds', async (req, res) => {
 	const newCamp = new Campground(campground);
 	await newCamp.save();
 	res.redirect(`/campgrounds/${newCamp._id}`);
+});
+
+//edit route
+app.get('/campgrounds/:id/edit', async (req, res) => {
+	const { id } = req.params;
+	const foundCamp = await Campground.findById(id);
+	res.render('campgrounds/edit', { campground: foundCamp });
+});
+
+//update route
+app.put('/campgrounds/:id', async (req, res) => {
+	const { id } = req.params;
+	const editedCamp = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
+	res.redirect(`/campgrounds/${editedCamp._id}`);
 });
 
 //show route

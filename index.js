@@ -111,8 +111,9 @@ app.all('*', (req, res, next) => {
 
 //error handling
 app.use((err, req, res, next) => {
-	const { message = 'Something went wrong', status = 500 } = err;
-	res.status(status).send(message);
+	const { status = 500 } = err;
+	if (!err.message) err.message = 'Something went wrong';
+	res.status(status).render('error', { err });
 });
 
 app.listen(3000, () => {
